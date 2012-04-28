@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^RLDrawIndicatorBlock)(CGContextRef);
+// your draw block will take in a context, the index of the indicator, and a BOOL
+// for whether or not it is highlighted.
+typedef void(^RLDrawIndicatorBlock)(CGContextRef, NSUInteger, BOOL);
 
 @interface RLPageControl : UIControl 
 
@@ -26,8 +28,7 @@ typedef void(^RLDrawIndicatorBlock)(CGContextRef);
 
 
 // Set the block of code that draws the indicator
-// Block takes in one argument CGContextRef: the current context.
-- (void)setDrawingBlockForHighlightedIndicator:(RLDrawIndicatorBlock)aBlock;
-- (void)setDrawingBlockForNormalIndicator:(RLDrawIndicatorBlock)aBlock;
+// block defined above.
+- (void)setDrawingBlockForIndicator:(RLDrawIndicatorBlock)aBlock;
 
 @end

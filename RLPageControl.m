@@ -19,9 +19,8 @@
     NSUInteger _numberOfPages;
 
     BOOL _hidesForSinglePage;
-    
-    RLDrawIndicatorBlock _highlightIndicatorDrawBlock;
-    RLDrawIndicatorBlock _normalIndicatorDrawBlock;
+
+    RLDrawIndicatorBlock _indicatorDrawBlock;
 }
 
 - (void)_sharedInit;
@@ -39,18 +38,21 @@
     self.currentPage = 0;
     self.numberOfPages = 0;
     self.hidesForSinglePage = NO;
-    
-    
+
+
     // These should probably be deffered but for my purposes, I'm not.
-    [self setDrawingBlockForNormalIndicator:^(CGContextRef context){
-        UIImage *image = [UIImage imageNamed:@"RL-page-indicator-normal"];
+    [self setDrawingBlockForIndicator:^(CGContextRef context, NSUInteger indicatorIndex, BOOL isHighlighted){
+
+        UIImage *image;
+
+        if (isHighlighted)
+            image = [UIImage imageNamed:@"RL-page-indicator-highlighted"];
+        else
+            image = [UIImage imageNamed:@"RL-page-indicator-normal"];
+
         [image drawAtPoint:CGPointZero];
     }];
 
-    [self setDrawingBlockForHighlightedIndicator:^(CGContextRef context){
-        UIImage *image = [UIImage imageNamed:@"RL-page-indicator-highlighted"];
-        [image drawAtPoint:CGPointZero];
-    }];
 
     UITapGestureRecognizer *tapGuesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_userDidTap:)];
     UISwipeGestureRecognizer *leftSwipeGuesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(_userDidSwipeLeft:)];
@@ -67,7 +69,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    
+
     if (self)
         [self _sharedInit];
 
@@ -77,10 +79,10 @@
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
-    
+
     if (self)
         [self _sharedInit];
-    
+
     return self;
 }
 
@@ -120,15 +122,10 @@
     return CGSizeMake(SIZE_OF_INDICATOR * pageCount, SIZE_OF_INDICATOR);
 }
 
-- (void)setDrawingBlockForHighlightedIndicator:(RLDrawIndicatorBlock)aBlock
-{
-    _highlightIndicatorDrawBlock = [aBlock copy];
-    [self setNeedsDisplay];
-}
 
-- (void)setDrawingBlockForNormalIndicator:(RLDrawIndicatorBlock)aBlock
+- (void)setDrawingBlockForIndicator:(RLDrawIndicatorBlock)aBlock
 {
-    _normalIndicatorDrawBlock = [aBlock copy];
+    _indicatorDrawBlock = [aBlock copy];
     [self setNeedsDisplay];
 }
 
@@ -136,46 +133,46 @@
 {
     CGFloat midX = CGRectGetMidX(self.bounds);
     CGPoint touchLocation = [sender locationInView:self];
-    
+
     if (touchLocation.x < midX)
         [self setCurrentPage:MAX(self.currentPage - 1, 0)];
     else
         [self setCurrentPage:MIN(self.currentPage + 1, self.numberOfPages - 1)];
+
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)_userDidSwipeLeft:(id)sender
 {
     [self setCurrentPage:MAX(self.currentPage - 1, 0)];
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)_userDidSwipeRight:(id)sender
 {
     [self setCurrentPage:MIN(self.currentPage + 1, self.numberOfPages - 1)];
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
 - (void)drawRect:(CGRect)rect
 {
     if (self.hidesForSinglePage && self.numberOfPages == 1)
         return;
-    
+
     CGContextRef context = UIGraphicsGetCurrentContext();
 
     CGSize size = [self sizeForNumberOfPages:self.numberOfPages];
     CGFloat startDrawX = CGRectGetMidX(self.bounds) - size.width / 2;
 
     CGContextTranslateCTM(context, startDrawX, 0);
-    
+
     for (int i = 0; i < self.numberOfPages; i++)
     {
-        CGContextSaveGState(context);
-        CGContextTranslateCTM(context, i * SIZE_OF_INDICATOR, 0);
-    
-        if (self.currentPage == i)
-            _highlightIndicatorDrawBlock(context);
-        else
-            _normalIndicatorDrawBlock(context);
-        
-        CGContextRestoreGState(context);
+        if (i > 0)
+            CGContextTranslateCTM(context, SIZE_OF_INDICATOR, 0);
+
+        _indicatorDrawBlock(context, i, self.currentPage == i);
+
     }
 }
 

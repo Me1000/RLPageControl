@@ -165,7 +165,8 @@
 
     CGContextTranslateCTM(context, startDrawX, 0);
     
-    for (int i = 0; i < self.numberOfPages; i++) {
+    for (int i = 0; i < self.numberOfPages; i++)
+    {
         CGContextSaveGState(context);
         CGContextTranslateCTM(context, i * SIZE_OF_INDICATOR, 0);
     

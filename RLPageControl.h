@@ -29,6 +29,6 @@ typedef void(^RLDrawIndicatorBlock)(CGContextRef, NSUInteger, BOOL);
 
 // Set the block of code that draws the indicator
 // block defined above.
-- (void)setDrawingBlockForIndicator:(RLDrawIndicatorBlock)aBlock;
+- (void)setIndicatorDrawBlock:(RLDrawIndicatorBlock)aBlock;
 
 @end

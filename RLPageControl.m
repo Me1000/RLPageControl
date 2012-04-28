@@ -40,8 +40,9 @@
     self.hidesForSinglePage = NO;
 
 
-    // These should probably be deffered but for my purposes, I'm not.
-    [self setDrawingBlockForIndicator:^(CGContextRef context, NSUInteger indicatorIndex, BOOL isHighlighted){
+    // These should probably be deffered but for my purposes I'm defining them here...
+    // You'll need to find your own resources. :)
+    [self setIndicatorDrawBlock:^(CGContextRef context, NSUInteger indicatorIndex, BOOL isHighlighted){
 
         UIImage *image;
 
@@ -123,7 +124,7 @@
 }
 
 
-- (void)setDrawingBlockForIndicator:(RLDrawIndicatorBlock)aBlock
+- (void)setIndicatorDrawBlock:(RLDrawIndicatorBlock)aBlock
 {
     _indicatorDrawBlock = [aBlock copy];
     [self setNeedsDisplay];

@@ -3,7 +3,7 @@
 //  Siklus
 //
 //  Created by Randy Luecke on 4/27/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Randy Luecke. All rights reserved.
 //
 
 #import "RLPageControl.h"

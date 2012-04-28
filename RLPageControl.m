@@ -172,8 +172,9 @@
         if (i > 0)
             CGContextTranslateCTM(context, SIZE_OF_INDICATOR, 0);
 
+        CGContextSaveGState(context);
         _indicatorDrawBlock(context, i, self.currentPage == i);
-
+        CGContextRestoreGState(context);
     }
 }
 

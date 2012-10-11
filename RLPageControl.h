@@ -10,7 +10,7 @@
 
 // your draw block will take in a context, the index of the indicator, and a BOOL
 // for whether or not it is highlighted.
-typedef void(^RLDrawIndicatorBlock)(CGContextRef, NSUInteger, BOOL);
+typedef void(^RLDrawIndicatorBlock)(CGContextRef context, NSUInteger indicatorIndex, BOOL isHighlighted);
 
 @interface RLPageControl : UIControl 
 

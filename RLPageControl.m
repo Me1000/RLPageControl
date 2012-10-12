@@ -38,20 +38,18 @@
     self.currentPage = 0;
     self.numberOfPages = 0;
     self.hidesForSinglePage = NO;
+    self.opaque = NO;
 
-
-    // These should probably be deffered but for my purposes I'm defining them here...
-    // You'll need to find your own resources. :)
     [self setIndicatorDrawBlock:^(CGContextRef context, NSUInteger indicatorIndex, BOOL isHighlighted){
-
-        UIImage *image;
-
-        if (isHighlighted)
-            image = [UIImage imageNamed:@"RL-page-indicator-highlighted"];
-        else
-            image = [UIImage imageNamed:@"RL-page-indicator-normal"];
-
-        [image drawAtPoint:CGPointZero];
+        if (isHighlighted) {
+            UIBezierPath *ovalPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, 8, 8)];
+            [[UIColor whiteColor] setFill];
+            [ovalPath fill];
+        } else {
+            UIBezierPath *ovalPath = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(0, 0, 8, 8)];
+            [[UIColor colorWithWhite:1 alpha:0.6] setFill];
+            [ovalPath fill];
+        }
     }];
 
 
